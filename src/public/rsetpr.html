@@ -1,0 +1,60 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        form {
+            height: 350px;
+            width: 250px;
+            background-color: rgb(245, 245, 245);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-radius: 10px;
+        }
+        label {
+            font-size: small;
+            margin-bottom: 10px;
+        }
+        form, .input-container {display: flex;
+            flex-direction: column;}
+        .input-container {
+            margin-top: 30px;
+            align-items: flex-start;
+            width: 80%;
+            padding: 0 10px;
+        }
+        .input-container input {width: 100%;}
+        .input-container button {
+            border: none;
+            background-color: green;
+            color: white;
+            padding: 5px 8px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <form action="">
+        <div class="input-container">
+            <label for="email">enter your password</label>
+            <input type="email" name="email" id="email">
+        </div>
+        <div class="input-container">
+            <button type="submit">submit</button>
+        </div>
+    </form>
+</body>
+</html>
