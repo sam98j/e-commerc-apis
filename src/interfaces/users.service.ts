@@ -1,4 +1,5 @@
 import { Document, Model } from "mongoose";
+import { Store } from "./stores.service";
 
 export interface User extends Document{
     _id: string,
@@ -8,6 +9,7 @@ export interface User extends Document{
     phone: string,
     birthday: string,
     gender: string,
+    stores: Store[],
     resetPasswordToken: undefined | string,
     resetPasswordExpires: Date | number | undefined,
     genPasswordReset(): void

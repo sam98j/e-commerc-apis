@@ -26,7 +26,8 @@ export interface Product extends Document {
     price: number;
     rate: number;
     section_id: string,
-    sub_category_id: string
+    sub_category_id: string,
+    store_id: string
 }
 
 export interface Categories extends Document {

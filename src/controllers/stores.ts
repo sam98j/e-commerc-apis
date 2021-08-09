@@ -12,14 +12,6 @@ export default class StoresController {
             res.status(500).send({err: "internal server error"})
         }
     }
-
-    async addStoreTab(req: Request, res: Response){
-        
-    }
-
-    async addStoreTabContnet(req: Request, res: Response){
-        
-    }
     // get all categories
     async getCategories(req: Request, res: Response){
         try {
@@ -46,6 +38,49 @@ export default class StoresController {
         try {
             const response = await StoresController.storesService.getSubCategsProds(sub_categ_id);
             res.status(200).send(response)
+        } catch(err) {
+            res.status(500).send(err)
+        }
+    }
+    // get top porducts
+    async getTopProducts(req: Request, res: Response){
+        try {
+            const topProducts = await StoresController.storesService.getTopProducts();
+            res.status(200).send(topProducts)
+        } catch(err) {
+            res.status(500).send(err)
+        }
+    }
+    // get new porducts
+    async getNewProducts(req: Request, res: Response){
+        try {
+            const newProducts = await StoresController.storesService.getNewProducts();
+            res.status(200).send(newProducts)
+        } catch(err) {
+            res.status(500).send(err)
+        }
+    }
+    // follow store
+    async followStore(req: Request, res: Response){
+        const {store_id} = req.params as {store_id: string};
+        const user_id = req.currentUser!;
+        try {
+            const response = await StoresController.storesService.followStore({user_id, store_id});
+            if(response === false) {
+                res.status(400).send({err: "err in your request"});
+                return
+            }
+            res.status(200).send({msg: "done"})
+        } catch (err) {
+            res.status(500).send(err)
+        }
+    }
+    // get all products of specific store
+    async getAllProductsOfStore(req: Request, res: Response){
+        const {store_id} = req.query as {store_id: string}
+        try {
+            const products = await StoresController.storesService.getAllProductsByStore(store_id);
+            res.send(products)
         } catch(err) {
             res.status(500).send(err)
         }

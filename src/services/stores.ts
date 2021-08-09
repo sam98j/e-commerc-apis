@@ -1,13 +1,11 @@
-import { AllStoresRes, Product, StoreTab, StoreTabSection } from "../interfaces/stores.service";
+import { AllStoresRes, Product, SubCategories } from "../interfaces/stores.service";
 import { 
     storesModel, 
-    storeTabModel, 
-    sectionProductModel, 
-    tabSectionModel,
     categoriesModel,
     subCategoriesModel,
     productsModel 
 } from "../models/stores";
+import UserModel from "../models/users";
 
 export default class StoresService {
     // return back to client all the stores
@@ -21,51 +19,6 @@ export default class StoresService {
             }
         })
     };
-
-    async addStoreTab(data: {name: string, store_id: string}): Promise<true>{
-        const {name, store_id} = data;
-        return new Promise(async (resolve, reject) => {
-            try {
-                const newStoreTab = {
-                    name,
-                    store_id
-                } as StoreTab
-                await storeTabModel.insertMany([newStoreTab]);
-                resolve(true)
-            } catch(err) {
-                reject(err)
-            }
-        })
-    }
-
-    async addTabSection(data: {tab_id: string, name: string}){
-        const {name, tab_id} = data;
-        return new Promise(async (resolve, reject) => {
-            try {
-                const newTabSection = {
-                    name,
-                    tab_id
-                } as StoreTabSection
-                await tabSectionModel.insertMany([newTabSection]);
-                resolve(true)
-            } catch(err) {
-                reject(err)
-            }
-        })
-    }
-
-    async addProductInTab(data: Product){
-        const {name, section_id, price, img, category_id, sub_category_id} = data;
-        return new Promise(async (resolve, reject) => {
-            try {
-                const newSectionProduct = {name, img, section_id, price, category_id, rate: 0, sub_category_id} as Product
-                await sectionProductModel.insertMany([newSectionProduct]);
-                resolve(true)
-            } catch(err) {
-                reject(err)
-            }
-        })
-    }
     // get all categories
     getCategories(): Promise<object>{
         return new Promise(async (resolve, reject) => {
@@ -100,4 +53,68 @@ export default class StoresService {
             }
         })
     }
+    // get top products
+    async getTopProducts(): Promise<{topProducts: Product[]}>{
+        return new Promise(async (resolve, reject) => {
+            try {
+                const Products = await productsModel.find({})
+                const topProducts = Products.filter(prod => prod.rate > 0);
+                resolve({topProducts})
+            } catch(err) {
+                reject(err)
+            }
+        })
+    }
+    // get new products
+    async getNewProducts(): Promise<{newProducts: Product[]}>{
+        return new Promise(async (resolve, reject) => {
+            try {
+                const Products = await productsModel.find({})
+                const newProducts = Products.filter(prod => prod.rate > 0);
+                resolve({newProducts})
+            } catch(err) {
+                reject(err)
+            }
+        })
+    }
+    // follow store
+    async followStore(data: {store_id: string, user_id: string}): Promise<boolean>{
+        return new Promise(async (resolve, reject) => {
+            const {store_id, user_id} = data;
+            if(store_id === "" || store_id === undefined || user_id === "" || store_id === undefined) {
+                resolve(false)
+            }
+            try {
+                await UserModel.updateOne({_id: user_id}, {$push: {stores: store_id}});
+                resolve(true)
+            } catch(err) {
+                reject(err)
+            }
+        })
+    }
+    // get all products of specififc store
+    async getAllProductsByStore(store_id: string): Promise<false | {allProducts: any}>{
+        return new Promise(async (resolve, reject) => {
+            if(store_id === "" || store_id === undefined) {
+                resolve(false)
+            }
+            try {
+                const products = await productsModel.find({store_id});
+                const sub_categories_ids = products.map(prod => prod.sub_category_id);
+                const sub_categories = await subCategoriesModel.find({_id: {$in: [...sub_categories_ids]}});
+                const allProducts = sub_categories.map(sub => {
+                    const filteredProds = products.filter(prod => {return prod.sub_category_id == sub._id});
+                    return {
+                        _id: sub._id,
+                        name: sub.name,
+                        products: filteredProds
+                    }
+                })
+                resolve({allProducts})
+            } catch(err) {
+                reject(err)
+            }
+        })
+    }
+
 }

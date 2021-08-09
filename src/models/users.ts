@@ -31,6 +31,7 @@ const UserScheam = new mongoose.Schema<User, UsersModel>({
         required: "birthday is required field",
         type: String,
     },
+    stores: [],
     resetPasswordToken: String,
     resetPasswordExpires: Date
 });
