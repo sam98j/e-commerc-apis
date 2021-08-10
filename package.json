@@ -7,7 +7,7 @@
     "dev": "nodemon ./src/bootstrap.ts",
     "build": "tsc --build",
     "start": "tsc --build & node ./dist/bootstrap.js",
-    "push": "git push heroku master",
+    "push": "git push heroku main",
     "commit": "git add . && git commit -m 'done'"
   },
   "author": "",

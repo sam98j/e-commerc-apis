@@ -116,5 +116,21 @@ export default class StoresService {
             }
         })
     }
-
+    // store home page
+    async storeHomePage(store_id: string): Promise<false | {topProducts: any, newProducts: any}>{
+        return new Promise(async (resolve, reject) => {
+            if(store_id === "" || store_id === undefined) {
+                resolve(false)
+            }
+            try {
+                // get top products - products that have rate > 1
+                const topProducts = await productsModel.find({rate: {$gt: 0}});
+                // get new products get first 5 products
+                const newProducts = await productsModel.find({}).limit(5);
+                resolve({topProducts, newProducts})
+            } catch(err) {
+                reject(err)
+            }
+        })
+    }
 }

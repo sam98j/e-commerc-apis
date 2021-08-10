@@ -85,4 +85,18 @@ export default class StoresController {
             res.status(500).send(err)
         }
     }
+    // get store home page
+    async storeHomePage(req: Request, res: Response){
+        const {store_id} = req.query as {store_id: string};
+        try {
+            const resDate = await StoresController.storesService.storeHomePage(store_id);
+            if(resDate === false) {
+                res.status(400).send({err: "error in your request"});
+                return
+            }
+            res.send(resDate)
+        } catch(err) {
+            res.status(500).send({err})
+        }
+    }
 }

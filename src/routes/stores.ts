@@ -9,7 +9,8 @@ const {
     getTopProducts,
     getNewProducts,
     followStore,
-    getAllProductsOfStore
+    getAllProductsOfStore,
+    storeHomePage
 } = new StoresController()
 const storesRouter = Router();
 storesRouter.get('/all_stores', allStores)
@@ -20,4 +21,5 @@ storesRouter.get('/get_top_products', getTopProducts)
 storesRouter.get('/get_new_products', getNewProducts)
 storesRouter.post('/follow_store', checkUser,followStore)
 storesRouter.get('/get_products_of_store', getAllProductsOfStore)
+storesRouter.get('/store_home_page', storeHomePage)
 export default storesRouter
