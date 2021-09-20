@@ -81,8 +81,9 @@ export default class StoresService {
     async followStore(data: {store_id: string, user_id: string}): Promise<boolean>{
         return new Promise(async (resolve, reject) => {
             const {store_id, user_id} = data;
-            if(store_id === "" || store_id === undefined || user_id === "" || store_id === undefined) {
-                resolve(false)
+            if(store_id === "" || store_id === undefined || user_id === "" || user_id === undefined) {
+                resolve(false);
+                return
             }
             try {
                 await UserModel.updateOne({_id: user_id}, {$push: {stores: store_id}});

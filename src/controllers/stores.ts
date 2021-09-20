@@ -62,7 +62,8 @@ export default class StoresController {
     }
     // follow store
     async followStore(req: Request, res: Response){
-        const {store_id} = req.params as {store_id: string};
+        const {store_id} = req.body as {store_id: string};
+        console.log(store_id)
         const user_id = req.currentUser!;
         try {
             const response = await StoresController.storesService.followStore({user_id, store_id});
