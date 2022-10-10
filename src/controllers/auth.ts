@@ -3,6 +3,7 @@ import { AuthFaild, LoginCredentioals } from "../interfaces/auth.service";
 import { SignUpData } from "../interfaces/users.service";
 import AuthService from "../services/auth";
 import {join} from 'path'
+import { SignUpServiceErrRes } from "../constants/enums/auth.enums";
 
 export default class AuthController {
     // auth service
@@ -35,15 +36,23 @@ export default class AuthController {
         const userData = req.body as SignUpData;
         // call users service
         try {
+            // all error response
+            const {REQ_BODY_ERR, USER_EMAIL_EXIST, USER_NAME_EXIST} = SignUpServiceErrRes;
+            // sign up usr
             const authRes = await AuthController.authService.signUp(userData);
             // if an error in request body
-            if(authRes === false) {
+            if(authRes === REQ_BODY_ERR) {
                 res.status(400).send({err: "error in your request body"});
                 return
             }
             // if an error in request body
-            if(authRes === null) {
-                res.status(400).send({err: "user is already exist"});
+            if(authRes === USER_EMAIL_EXIST) {
+                res.status(400).send({err: "this email is already exist"});
+                return
+            }
+            // if an error in request body
+            if(authRes === USER_NAME_EXIST) {
+                res.status(400).send({err: "this user_name is already exist"});
                 return
             }
             // there no error
@@ -136,5 +145,13 @@ export default class AuthController {
         } catch(err) {
             res.sendStatus(500)
         }
+    }
+
+    // checkEmailAvalibility controller
+    async checkEmailAvalibility(req: Request, res: Response){
+        // get the user email from the req body
+        const {email} = req.body as {email: string}
+
+        
     }
 }

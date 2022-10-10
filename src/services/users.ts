@@ -27,6 +27,18 @@ export default class Users_Service {
             }
         })
     }
+    // find user by user name
+    // find user by username
+    async findUserByUserName(user_name: String): Promise<User | null> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const user = await UserModel.findOne({user_name});
+                resolve(user)
+            } catch(err) {
+                reject(err)
+            }
+        })
+    }
     // get user by credentioals
     async getUserByCred(credn: LoginCredentioals): Promise<User | false | null>{
         const loginCredentioals: LoginCredentioals = {

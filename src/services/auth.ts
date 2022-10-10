@@ -4,42 +4,48 @@ import Users_Service from "./users";
 import JWT from 'jsonwebtoken';
 import sendMail from "./mailer";
 import verifyPhoneNum from './sms'
+import { SignUpServiceErrRes } from "../constants/enums/auth.enums";
+import { SignUpServiceRes } from "../constants/interfaces/auth.interface";
 
 export default class AuthService {
     private static users_service = new Users_Service()
     // signup service
-    async signUp(userData: SignUpData): Promise<null | false | object>{
+    async signUp(userData: SignUpData): Promise<SignUpServiceErrRes | SignUpServiceRes>{
+        const {USER_EMAIL_EXIST, REQ_BODY_ERR, USER_NAME_EXIST} = SignUpServiceErrRes
         // destruct the sign up data fields 
-        const {phone, password, email, username} = userData;
+        const {password, email, user_name} = userData;
         return new Promise(async (resolve, reject) => {
             // if an error accur in sign data
-            if(password === undefined || email === undefined || username === undefined || phone === undefined) {
-                resolve(false)
+            if(password === undefined || email === undefined || user_name === undefined) {
+                resolve(REQ_BODY_ERR)
             }
             // try to check if user is exist
             try {
                 // check if user is exist
                 const User = await AuthService.users_service.findUser(userData.email);
-                // if user is exist
+                // get user by username
+                const getUserByUserName = await AuthService.users_service.findUserByUserName(user_name);
+                // if user email is exist
                 if(User) {
-                    resolve(null)
+                    resolve(USER_EMAIL_EXIST)
+                    return
+                }
+                // check if username is exist
+                if(getUserByUserName) {
+                    resolve(USER_NAME_EXIST)
+                    return
                 }
                 // user dosnot exist so keep gooing
                 // send verification code to the user
-                try {
-                    const code = await verifyPhoneNum(phone as string);
-                    // try to add new user 
-                    try {
-                        const {_id} = await AuthService.users_service.addUser(userData);
-                        const token = JWT.sign({_id, code}, process.env.TOKEN_SECRET!)
-                        const resObj = {token};
-                        resolve(resObj)
-                    } catch(err) {
-                        reject(err)
-                    }
-                } catch(err) {
-                    reject(err)
-                }
+                const randomCode = String(Math.random()).slice(2, 6);
+                // disable verify phone number
+                // const code = await verifyPhoneNum(phone as string);
+                (await sendMail({link: randomCode, email: email as string}))[0].statusCode;
+                // try to add new user 
+                const {_id} = await AuthService.users_service.addUser(userData);
+                const token = JWT.sign({_id, code: randomCode}, process.env.TOKEN_SECRET!)
+                resolve({token})
+               
             } catch(err) {  
                 reject(err)
             }
@@ -92,6 +98,7 @@ export default class AuthService {
     }
     // verify Token
     async verifyToken(bearerToken: any): Promise<Partial<VerifyTokenRes>>{
+        console.log(bearerToken)
         return new Promise((resolve, reject) => {
             // check it's string and it's not undefinded
         if(typeof bearerToken === "string") {

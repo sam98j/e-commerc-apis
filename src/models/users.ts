@@ -5,12 +5,8 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
 
 const UserScheam = new mongoose.Schema<User, UsersModel>({
-    username: {
+    user_name: {
         required: "username is required field",
-        type: String,
-    },
-    phone: {
-        required: "phone is required field",
         type: String,
     },
     password: {
@@ -23,13 +19,21 @@ const UserScheam = new mongoose.Schema<User, UsersModel>({
         trim: true,
         unique: true 
     },
-    gender: {
-        required: "gender is required field",
-        type: String,
-    },
-    birthday: {
+    date_of_birth: {
         required: "birthday is required field",
         type: String,
+    },
+    occupation: {
+        required: "occupation is required field",
+        type: String,
+    },
+    account_type: {
+        required: "account_type is required field",
+        type: Number,
+    },
+    have_image: {
+        required: "have_image is required field",
+        type: Number
     },
     stores: [],
     resetPasswordToken: String,

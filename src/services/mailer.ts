@@ -6,10 +6,13 @@ sendGrid.setApiKey(sendgrid_api_key);
 
 export default async function sendMail(data: {link: string, email: string}) {
     return sendGrid.send({
-        from: "hosam98j@hotmail.com",
+        from: "hosam98j@gmail.com",
         to: data.email,
         text: data.link,
         subject: "e-com-app reset password",
-        html: `<h1 style={color: 'red'}>click the link to complete reset password ${data.link}<h1/>`
+        html: `<div style="border: 1px solid gray; padding: 5px; border-radius: 5px">
+                    <h1>Resturant App Email Verification</h1>
+                    <p>Your veriecation code is ${data.link}</p>
+                <div/>`
     })
 }

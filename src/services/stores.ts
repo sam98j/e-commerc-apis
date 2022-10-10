@@ -57,7 +57,7 @@ export default class StoresService {
     async getTopProducts(): Promise<{topProducts: Product[]}>{
         return new Promise(async (resolve, reject) => {
             try {
-                const Products = await productsModel.find({})
+                const Products = await productsModel.find({}) as Product[];
                 const topProducts = Products.filter(prod => prod.rate > 0);
                 resolve({topProducts})
             } catch(err) {
@@ -69,7 +69,7 @@ export default class StoresService {
     async getNewProducts(): Promise<{newProducts: Product[]}>{
         return new Promise(async (resolve, reject) => {
             try {
-                const Products = await productsModel.find({})
+                const Products = await productsModel.find({}) as Product[];
                 const newProducts = Products.filter(prod => prod.rate > 0);
                 resolve({newProducts})
             } catch(err) {
@@ -100,9 +100,9 @@ export default class StoresService {
                 resolve(false)
             }
             try {
-                const products = await productsModel.find({store_id});
+                const products = await productsModel.find({store_id}) as Product[];
                 const sub_categories_ids = products.map(prod => prod.sub_category_id);
-                const sub_categories = await subCategoriesModel.find({_id: {$in: [...sub_categories_ids]}});
+                const sub_categories = await subCategoriesModel.find({_id: {$in: [...sub_categories_ids]}}) as SubCategories[];
                 const allProducts = sub_categories.map(sub => {
                     const filteredProds = products.filter(prod => {return prod.sub_category_id == sub._id});
                     return {
@@ -127,7 +127,7 @@ export default class StoresService {
                 // get top products - products that have rate > 1
                 const topProducts = await productsModel.find({rate: {$gt: 0}});
                 // get new products get first 5 products
-                const newProducts = await productsModel.find({}).limit(5);
+                const newProducts = await productsModel.find({});
                 resolve({topProducts, newProducts})
             } catch(err) {
                 reject(err)

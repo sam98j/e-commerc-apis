@@ -1,0 +1,5 @@
+export enum SignUpServiceErrRes {
+    USER_EMAIL_EXIST = "USER_EMAIL_EXIST",
+    REQ_BODY_ERR = "REQ_BODY_ERR",
+    USER_NAME_EXIST = "USER_NAME_EXIST"
+}

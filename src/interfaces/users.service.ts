@@ -15,12 +15,15 @@ export interface User extends Document{
     genPasswordReset(): void
 }
 export interface SignUpData extends Object {
+    full_name: string;
     email: String;
-    phone: String;
-    username: String;
+    user_name: String;
     password: String;
-    birthday: string;
-    gender: string
+    have_image: number;
+    date_of_birth: string;
+    occupation: any;
+    account_type: number;
+    country_code: number;
 }
 // interfce of user updated data
 export interface UpdatedData {

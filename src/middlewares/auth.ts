@@ -28,6 +28,7 @@ export async function checkCode(req: Request, res: Response, next: NextFunction)
     }
     try {
         const resObj = await verifyToken(bearerToken);
+        console.log(resObj.code, reqBody.code)
         // check if code send math the code generated
         if(resObj.code === reqBody.code) {
             req.currentUser = resObj._id;
