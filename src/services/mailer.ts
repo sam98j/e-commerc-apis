@@ -1,8 +1,9 @@
 import sendGrid from '@sendgrid/mail';
 import dotenv from 'dotenv';
 dotenv.config()
-const sendgrid_api_key = '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';
-sendGrid.setApiKey(sendgrid_api_key);
+const sendgrid_api_key = process.env.SENDGRID_API_KEY;
+console.log(sendgrid_api_key)
+sendGrid.setApiKey(sendgrid_api_key!);
 
 export default async function sendMail(data: {link: string, email: string}) {
     return sendGrid.send({
