@@ -9,6 +9,10 @@ const UserScheam = new mongoose.Schema<User, UsersModel>({
         required: "username is required field",
         type: String,
     },
+    full_name: {
+        required: "full_name is required field",
+        type: String,
+    },
     password: {
         required: "password is required field",
         type: String,
@@ -66,9 +70,9 @@ UserScheam.methods.genJWT = function(){
     const today = new Date();
     const expirationDate = new Date(today);
     expirationDate.setDate(today.getDate() + 60);
-    const {_id, username, email} = this;
+    const {_id, user_name, email} = this;
     // token payload
-    let payload = {_id, username, email};
+    let payload = {_id, user_name, email};
     // return token
     return jwt.sign(payload, process.env.TOKEN_SECRET!, {
         expiresIn: parseInt(String(expirationDate.getTime() / 1000), 10)

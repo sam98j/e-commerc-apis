@@ -5,12 +5,10 @@ export interface LoginCredentioals {
 export interface AuthRes {
     token: string;
     user: {
-        username: String;
-        phone: String;
+        user_name: String;
+        full_name: String;
         email: String;
-        password: String;
-        gender: string,
-        birthday: string
+        date_of_birth: String
     }
 }
 export interface AuthFaild{

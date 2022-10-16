@@ -37,14 +37,22 @@ export default class AuthService {
                 }
                 // user dosnot exist so keep gooing
                 // send verification code to the user
-                const randomCode = String(Math.random()).slice(2, 6);
-                // disable verify phone number
-                // const code = await verifyPhoneNum(phone as string);
-                (await sendMail({link: randomCode, email: email as string}))[0].statusCode;
+                // const randomCode = String(Math.random()).slice(2, 6);
+                // // disable verify phone number
+                // // const code = await verifyPhoneNum(phone as string);
+                // (await sendMail({link: randomCode, email: email as string}))[0].statusCode;
                 // try to add new user 
-                const {_id} = await AuthService.users_service.addUser(userData);
-                const token = JWT.sign({_id, code: randomCode}, process.env.TOKEN_SECRET!)
-                resolve({token})
+                const singedUser = await AuthService.users_service.addUser(userData);
+                console.log(singedUser.full_name);
+                // const token = JWT.sign({_id, code: randomCode}, process.env.TOKEN_SECRET!)
+                resolve({
+                    _id: singedUser.id, 
+                    user_name: singedUser.user_name, 
+                    full_name: singedUser.full_name, 
+                    email: singedUser.email,
+                    data_of_birth: singedUser.date_of_birth,
+                    account_type: singedUser.account_type
+                })
                
             } catch(err) {  
                 reject(err)
@@ -58,16 +66,16 @@ export default class AuthService {
             const user = await AuthService.users_service.getUserByCred(credn);
             // check if user is exist
             if(user) {
-                const {username, phone, email, _id, password, gender, birthday} = user;
+                const {user_name, email, _id, date_of_birth, full_name} = user;
                 const token = JWT.sign({_id}, process.env.TOKEN_SECRET!);
                 const resObj: AuthRes = {
                     token,
-                    user: { email, phone, username, password, gender, birthday}
+                    user: { email, user_name, date_of_birth, full_name}
                 }
                 return resObj
             }
             return user
-        } catch(error) {
+        } catch(error: any) {
             return error
         }
     }
@@ -82,11 +90,11 @@ export default class AuthService {
                 const user = await AuthService.users_service.findById(user_id);
                 // check if user is exist
                 if(user) {
-                    const {username, password, email, phone, gender, birthday} = user;
+                    const {user_name, email, date_of_birth, full_name} = user;
                     // generate token to this user
                     const token = JWT.sign({_id: user_id}, process.env.TOKEN_SECRET!);
                     // res object
-                    const resObj = { token, user: {username, password, email, phone, gender, birthday} } as AuthRes
+                    const resObj = { token, user: {user_name, email, date_of_birth, full_name} } as AuthRes
                     resolve(resObj);
                     return
                 }
@@ -123,13 +131,13 @@ export default class AuthService {
             const user = await AuthService.users_service.findById(cUserId)
             // if the user is exit
             if(user !== null) {
-                const {phone} = user;
-                // call the service
-                await verifyPhoneNum(phone)
-                return true
+                // const {phone} = user;
+                // // call the service
+                // await verifyPhoneNum(phone)
+                // return true
             }
             return false
-        } catch(err){ return err}
+        } catch(err:any){ return err}
     }
     // password reset service
     async passwordReset(email: string): Promise<boolean | null>{
@@ -146,23 +154,14 @@ export default class AuthService {
             }
             // make resetPassword token and reset password expires
             user.genPasswordReset();
-            try {
-                // save user
-                await user.save();
-                // the link that will send to the user
-                const link = `http://localhost:${process.env.PORT || 5000}/auth/reset_password/${user.resetPasswordToken}`;
-                // send the mail
-                try {
-                    await sendMail({link, email});
-                    console.log('email send')
-                    return true
-                } catch(err) {
-                    return err
-                }
-            } catch(err) {
-                return err
-            }
-        } catch(err) {
+            await user.save();
+            // the link that will send to the user
+            const link = `http://localhost:${process.env.PORT || 5000}/auth/reset_password/${user.resetPasswordToken}`;
+            // send the mail
+            await sendMail({link, email});
+            console.log('email send')
+            return true
+        } catch(err: any) {
             return err
         }
     }
@@ -170,7 +169,7 @@ export default class AuthService {
         try {
             const checkTokenRes = await AuthService.users_service.findByToken(token);
             return checkTokenRes
-        } catch(err) {
+        } catch(err: any) {
             return err
         }
     }
@@ -189,13 +188,9 @@ export default class AuthService {
             user.resetPasswordExpires = undefined;
             user.resetPasswordToken = undefined
             // user save
-            try {
-                await user.save()
-                return true
-            } catch(err) {
-                return err
-            }
-        } catch(err) {
+            await user.save()
+            return true
+        } catch(err: any) {
             return err
         }
     }

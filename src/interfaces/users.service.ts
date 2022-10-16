@@ -3,13 +3,15 @@ import { Store } from "./stores.service";
 
 export interface User extends Document{
     _id: string,
-    username: String,
+    user_name: String,
+    full_name: string;
     password: String,
     email: String,
-    phone: string,
-    birthday: string,
-    gender: string,
-    stores: Store[],
+    date_of_birth: string,
+    occupation: any;
+    account_type: number;
+    have_image: number;
+    country_code: number;
     resetPasswordToken: undefined | string,
     resetPasswordExpires: Date | number | undefined,
     genPasswordReset(): void

@@ -59,26 +59,26 @@ export default class Users_Service {
         })
     }
     // update user data
-    async updateUserData(cUserId: string, updatedData: Partial<User>): Promise<boolean>{
+    async updateUserData(cUserId: string, updatedData: Partial<User>): Promise<any>{
         // get the fileds
-        const {username, email, phone, birthday, gender} = updatedData;
-        return new Promise(async(resovle, reject) => {
-            // check if all of them are undefined
-            if(username === undefined && email === undefined && phone === undefined && birthday === undefined && gender === undefined) {
-                resovle(false)
-            }
-            // check if all of them are empty string
-            if(username === "" && email === "" && phone === "" && birthday === "" && gender === "") {
-                resovle(false)
-            }
-            // updated data
-            const updated_data = validate_user_updated_data(updatedData)
-            // update the database
-            try {
-                await UserModel.updateOne({_id: cUserId}, {...updated_data})
-                resovle(true)
-            } catch(err) {reject(err)}
-        })
+        // const {username, email, phone, birthday, gender} = updatedData;
+        // return new Promise(async(resovle, reject) => {
+        //     // check if all of them are undefined
+        //     if(username === undefined && email === undefined && phone === undefined && birthday === undefined && gender === undefined) {
+        //         resovle(false)
+        //     }
+        //     // check if all of them are empty string
+        //     if(username === "" && email === "" && phone === "" && birthday === "" && gender === "") {
+        //         resovle(false)
+        //     }
+        //     // updated data
+        //     const updated_data = validate_user_updated_data(updatedData)
+        //     // update the database
+        //     try {
+        //         await UserModel.updateOne({_id: cUserId}, {...updated_data})
+        //         resovle(true)
+        //     } catch(err) {reject(err)}
+        // })
         // fields -> email, phone, username
         // every field of above maybe undefinded or empty
     }
