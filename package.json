@@ -24,8 +24,8 @@
     "twilio": "^3.63.0"
   },
   "engines": {
-    "npm" : "8.0.0",
-    "node" : "16.0.0"
+    "npm" : "8.19.2",
+    "node" : "16.17.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
