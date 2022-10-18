@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon ./src/bootstrap.ts",
     "build": "tsc --build",
+    "heroku-postbuild": "npm run build",
     "start": "tsc --build & node ./dist/bootstrap.js",
     "push": "git push heroku main",
     "commit": "git add . && git commit -m 'done'"
